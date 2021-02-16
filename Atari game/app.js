@@ -12,6 +12,8 @@ let tenTimeSpeed;
 let xDirection = -2;
 let yDirection = 2;
 let score = 0;
+let scoreFive = false;
+let scoreTen = false;
 //create Block
 
 const userStart = [230, 10];
@@ -112,6 +114,7 @@ grid.appendChild(ball);
 
 //move ball
 function moveBall(){
+    console.log(xDirection, yDirection)
     ballCurrentPosition[0] += xDirection;
     ballCurrentPosition[1] += yDirection;
     drawBall();
@@ -165,13 +168,13 @@ function checkForCollisions(){
         changeDirection();
     }
    
-    if(score === 5){
-        clearInterval(timerId);             
+    if(score === 5 && !scoreFive){
+        scoreFive = true;
         fiveTimesFaster();
     }
                                             //Comente esses dois ifs para que o prgama funcione normalmente.
-    if(score === 10){
-        clearInterval(fiveTimeSpeed);
+    if(score === 10 && !scoreTen){
+        scoreTen = true;
         tenTimeSpeed();
     }
      
@@ -187,24 +190,24 @@ function checkForCollisions(){
 }
 
 function changeDirection(){
-    if(xDirection === 2 && yDirection === 2){
-        yDirection = -2;
+    if(xDirection > 0 && yDirection > 0){
+        yDirection = yDirection*(-1);
         return;
     }
 
-    if(xDirection === 2 && yDirection === -2){
-        xDirection = -2;
+    if(xDirection  > 0 && yDirection < 0){
+        xDirection = xDirection*(-1);
         
         return;
     }
 
-    if(xDirection === -2 && yDirection === -2){
-        yDirection = 2;
+    if(xDirection < 0 && yDirection < 0){
+        yDirection = yDirection*(-1);
         return;
     }
 
-    if(xDirection === -2 && yDirection === 2){
-        xDirection = 2;
+    if(xDirection < 0 && yDirection > 0){
+        xDirection = xDirection*(-1);
         return;
     }
 }
@@ -212,25 +215,17 @@ function changeDirection(){
 //Event that starts the game
 
 button.addEventListener('click', ()=>{
-    timerId = setInterval(moveBall, 30);
+    timerId = setInterval(moveBall, 15);
 })
 
 //Função de 5 vezes mais rápido
 function fiveTimesFaster(){
-    fiveTimeSpeed = setInterval(moveBall, 20);
-    if(ballCurrentPosition[1] <=0){
-        clearInterval(fiveTimeSpeed);
-        scoreDisplay.innerHTML = 'You lose';
-
-        document.removeEventListener('keydown', moveUser);
-    }
+    yDirection += yDirection > 0 ? 0.5 : -0.5;
+    xDirection += xDirection > 0 ? 0.5 : -0.5;
 }
 
 //Função de 10 vezes mais rápido
 function tenTimesFaster(){
-    if(ballCurrentPosition[1] <=0){
-        clearInterval(tenTimeSpeed);
-        scoreDisplay.innerHTML = 'You lose';
-        document.removeEventListener('keydown', moveUser);
-    }
+    yDirection += yDirection > 0 ? 0.5 : -0.5;
+    xDirection += xDirection > 0 ? 0.5 : -0.5;
 }
